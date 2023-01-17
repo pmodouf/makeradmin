@@ -30,6 +30,7 @@ import Messages from "./Messages/Routes";
 import Statistics from "./Statistics/Routes";
 import Settings from "./Settings/Routes";
 import Quiz from "./Quiz/Routes";
+import BoxTerminator from "./boxTerminator/Routes";
 
 const nav = {
     brand: "MakerAdmin 1.0",
@@ -146,6 +147,18 @@ const nav = {
                 ],
         },
         {
+            text: "boxTerminator",
+            target: "/boxTerminator",
+            icon: "crosshairs",
+            // children: 
+            //     [
+            //         {
+            //             text: "About",
+            //             target: "/boxTerminator/about"
+            //         }
+            //     ]
+        },
+        {
             text: "Logga ut",
             target: "/logout",
             icon: "sign-out",
@@ -192,6 +205,7 @@ class App extends React.Component {
                                                 <Route path="/statistics" component={Statistics} />
                                                 <Route path="/settings" component={Settings} />
                                                 <Route path="/quiz" component={Quiz} />
+                                                <Route path="/boxTerminator" component={BoxTerminator} />
                                                 <Route component={Page404} />
                                             </Switch>
                                         </div>
