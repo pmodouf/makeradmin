@@ -125,7 +125,7 @@ def change_phone():
 
 giftcards = Section("giftcards")
 @giftcards.route("/")
-def show_giftcars():
+def show_giftcards():
     return render_template("giftcards.html")
 @giftcards.route("/confirmation")
 def giftcards_confirmation():
