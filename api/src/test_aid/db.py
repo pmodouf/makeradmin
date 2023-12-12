@@ -1,3 +1,4 @@
+import datetime
 from logging import getLogger
 from random import randint
 from typing import Optional
@@ -7,7 +8,7 @@ from test_aid.obj import ObjFactory
 
 from core.models import AccessToken, PasswordResetToken
 from core.service_users import TEST_SERVICE_USER_ID
-from membership.models import Member, Group, Permission, Span, Key, Box, PhoneNumberChangeRequest
+from membership.models import DiscountCoupon, Member, Group, Permission, Span, Key, Box, PhoneNumberChangeRequest
 from messages.models import Message
 from service.db import db_session
 from shop.models import ProductCategory, Product, ProductAction
@@ -40,6 +41,7 @@ class DbFactory:
         self.action: Optional[ProductAction] = None
         self.password_reset_token: Optional[PasswordResetToken] = None
         self.phone_request: Optional[PhoneNumberChangeRequest] = None
+        self.discount: Optional[DiscountCoupon]=None
 
     def create_access_token(self, **kwargs) -> AccessToken:
         obj = dict(
@@ -203,6 +205,17 @@ class DbFactory:
         db_session.add(self.action)
         db_session.flush()
         return self.action
+    
+    def create_discount(self, **kwargs) -> DiscountCoupon:
+        assert self.obj is not None
+       # if self.discount:
+           # kwargs.setdefault("discount_level_id",self.discount_level_id)
+        obj = self.obj.create_discount(**kwargs)
+        self.discount = DiscountCoupon(**obj)
+        db_session.add(self.discount)
+        db_session.flush()
+        return self.discount
+        
 
     def create_password_reset_token(self, member: Optional[Member] = None, **kwargs) -> PasswordResetToken:
         member = member or self.member
@@ -216,3 +229,12 @@ class DbFactory:
         db_session.add(self.password_reset_token)
         db_session.commit()
         return self.password_reset_token
+    
+    def delete_discount(self, id: Optional[int] = None) -> None:
+        discount_id = id
+        if discount_id is None:
+            assert self.discount is not None
+            discount_id = self.discount.id
+        assert discount_id is not None
+        db_session.query(Discount).filter(Discount.id == discount_id).delete()
+        db_session.flush()

@@ -4,11 +4,12 @@ from typing import Any, Dict
 from faker import Faker
 from basic_types.enums import PriceLevel
 
-from membership.models import Member, Span
+from membership.models import DiscountCoupon, Member, Span
 from messages.models import Message
-from shop.models import ProductAction
+from shop.models import ProductAction 
 from test_aid.test_util import random_str
 import re
+
 
 DEFAULT_PASSWORD = "D9ub8$13"
 
@@ -29,6 +30,7 @@ class ObjFactory:
         self.span = None
         self.message = None
         self.phone_request = None
+        self.discount = None
         seed()
 
     def create_member(self, **kwargs) -> Dict[str, Any]:
@@ -145,6 +147,20 @@ class ObjFactory:
         obj.update(**kwargs)
         self.message = obj
         return self.message
+    
+    def create_discount(self,**kwargs):
+        assert self.member is not None
+       # discount_percentage = 0.5
+        obj = dict(
+            description = "TestRabatt",
+            discount_percentage = 0.5,
+            created_at = datetime.now(),
+        )
+        obj.update(**kwargs)
+        self.discount = obj
+        return self.discount
+
+   
 
 
 def random_phone_number() -> str:

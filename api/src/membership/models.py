@@ -5,6 +5,7 @@ import phonenumbers as phonenumbers
 from sqlalchemy import (
     Column,
     Integer,
+    DECIMAL,
     String,
     DateTime,
     Text,
@@ -57,7 +58,7 @@ class Member(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now())
     deleted_at = Column(DateTime)
-
+    discount_id = Column(Integer,ForeignKey('webshop_discount.id'),nullable = True)
     # True during the registration flow as the payment is being processed
     pending_activation = Column(Boolean, nullable=False)
 
@@ -69,6 +70,7 @@ class Member(Base):
     stripe_labaccess_subscription_id = Column(String(64))
     price_level = Column(Enum(*[x.value for x in PriceLevel]), nullable=False)
     price_level_motivation = Column(String)
+    discount = relationship("DiscountCoupon", backref= "members")
 
     @validates("phone")
     def validate_phone(self, key: Any, value: Optional[str]) -> Optional[str]:
@@ -87,6 +89,15 @@ group_permission = Table(
     Column("group_id", ForeignKey("membership_groups.group_id"), nullable=False),
     Column("permission_id", ForeignKey("membership_permissions.permission_id"), nullable=False),
 )
+class DiscountCoupon(Base):
+    __tablename__="webshop_discount"
+    id= Column(Integer, primary_key=True, nullable=False, autoincrement= True)
+    description = Column(String(255))
+    stripe_discount_id = Column(String(64),nullable=True)
+    discount_percentage = Column(DECIMAL(5,2),nullable=False)
+    created_at = Column(DateTime, default = func.now())
+    updated_at = Column(DateTime, default = func.now(), onupdate=func.now())
+    deleted_at = Column(DateTime)
 
 
 class Group(Base):
